@@ -26,8 +26,13 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public void deleteById(Long id){
-        userRepository.deleteById(id);
+    public boolean deleteById(Long id){
+        try {
+            userRepository.deleteById(id);
+            return true;
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
     public User updateUser(Long userId, User updatedUser) {
