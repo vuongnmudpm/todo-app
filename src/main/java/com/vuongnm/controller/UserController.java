@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
@@ -18,7 +17,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    //Method get all data
+    //Method get all user
     @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<User>>> getAll() {
         return ApiResponse.buildResponse(userService.getAll(), "success", true, HttpStatus.OK);
@@ -32,29 +31,44 @@ public class UserController {
 
     //Method get information of user by id
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Optional<User>>> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        if (user.isPresent()) {
-            return ApiResponse.buildResponse(userService.getUserById(id), "success", true, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        if (user != null) {
+            return ApiResponse.buildResponse(user, "success", true, HttpStatus.OK);
         } else {
-            return ApiResponse.buildResponse(userService.getUserById(id), "fail", false, HttpStatus.NOT_FOUND);
+            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
         }
     }
 
+    //Method get information of user by username
+    @GetMapping("/getByUsername/{username}")
+    public ResponseEntity<ApiResponse<User>> getUserByUsername(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        if (user != null) {
+            return ApiResponse.buildResponse(user, "success", true, HttpStatus.OK);
+        } else {
+            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //Method delete user by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Boolean>> deleteById(@PathVariable Long id) {
-        Optional<User> userOptional = userService.getUserById(id);
-        if(userOptional.isPresent()) {
-            return ApiResponse.buildResponse(userService.deleteById(id), "success", true, HttpStatus.OK);
+    public ResponseEntity<String> deleteById(@PathVariable Long id) {
+        if (userService.getUserById(id) != null) {
+            userService.deleteById(id);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
         } else {
-            return ApiResponse.buildResponse(userService.deleteById(id), "false", false, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
 
+    //Method update information of user
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable Long id, @RequestBody User user) {
-        User userUpdate = userService.updateUser(id, user);
-        return ApiResponse.buildResponse(userService.updateUser(id, user), "success", true, HttpStatus.OK);
+        if (userService.getUserById(id) != null) {
+            return ApiResponse.buildResponse(userService.updateUser(id, user), "success", true, HttpStatus.OK);
+        } else {
+            return ApiResponse.buildResponse(null, "success", true, HttpStatus.NOT_FOUND);
+        }
     }
-
 }
