@@ -25,18 +25,14 @@ public class TaskLabelController {
     LabelService labelService;
 
     @GetMapping("/get-all")
-    public List<TaskLabel> getAll() {
+    public ResponseEntity<ApiResponse<List<TaskLabel>>> getAll() {
         return taskLabelService.getAll();
     }
 
-    @GetMapping("/getByLabel/{labelid}")
-    public ResponseEntity<ApiResponse<List<TaskLabel>>> getTaskLabelByLabel(@PathVariable("labelid") Long labelid) {
-        Label label = labelService.getLabelById(labelid);
-        if (label != null) {
-            return ApiResponse.buildResponse(taskLabelService.getTaskLabelByLabel(label), "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/getByLabel/{labelId}")
+    public ResponseEntity<ApiResponse<List<TaskLabel>>> getTaskLabelByLabel(@PathVariable("labelId") Long labelId) {
+        Label label = labelService.getLabelById(labelId).getBody().getData();
+        return taskLabelService.getTaskLabelByLabel(label);
     }
 
 }

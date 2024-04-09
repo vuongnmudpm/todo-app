@@ -18,33 +18,23 @@ public class LabelController {
     LabelService labelService;
 
     @RequestMapping("/get-all")
-    public List<Label> getAll() {
+    public ResponseEntity<ApiResponse<List<Label>>> getAll() {
         return labelService.getAll();
     }
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Label>> createLabel(@RequestBody Label label) {
-        return ApiResponse.buildResponse(labelService.createLabel(label), "success", true, HttpStatus.OK);
+        return labelService.createLabel(label);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Label>> getLabelById(@PathVariable Long id) {
-        Label label = labelService.getLabelById(id);
-        if (label != null) {
-            return ApiResponse.buildResponse(label, "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+        return labelService.getLabelById(id);
     }
 
-    @GetMapping("/labelname/{labelname}")
-    public ResponseEntity<ApiResponse<Label>> getLabelByName(@PathVariable String labelname) {
-        Label label = labelService.getLabelByName(labelname);
-        if (label != null) {
-            return ApiResponse.buildResponse(label, "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/labelName/{labelName}")
+    public ResponseEntity<ApiResponse<Label>> getLabelByName(@PathVariable String labelName) {
+        return labelService.getLabelByName(labelName);
     }
 
     @DeleteMapping("/{id}")
@@ -59,10 +49,6 @@ public class LabelController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Label>> updateUser(@PathVariable Long id, @RequestBody Label label) {
-        if (labelService.getLabelById(id) != null) {
-            return ApiResponse.buildResponse(labelService.updateLabel(id, label), "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+        return labelService.updateLabel(id, label);
     }
 }

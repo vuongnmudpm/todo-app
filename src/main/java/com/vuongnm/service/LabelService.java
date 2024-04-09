@@ -1,57 +1,27 @@
 package com.vuongnm.service;
 
 import com.vuongnm.model.Label;
+import com.vuongnm.payload.ApiResponse;
 import com.vuongnm.repository.LabelRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class LabelService {
-    @Autowired
-    LabelRepository labelRepository;
+public interface LabelService {
 
-    public List<Label> getAll() {
-        return labelRepository.findAll();
-    }
+    public ResponseEntity<ApiResponse<List<Label>>> getAll();
 
-    public Label createLabel(Label lable) {
-        return labelRepository.save(lable);
-    }
+    public ResponseEntity<ApiResponse<Label>> createLabel(Label lable);
 
-    public Label getLabelById(Long id) {
-        Optional<Label> optionalLabel = labelRepository.findById(id);
-        if (optionalLabel.isPresent()) {
-            return optionalLabel.get();
-        } else {
-            return null;
-        }
-    }
+    public ResponseEntity<ApiResponse<Label>> getLabelById(Long id);
 
-    public Label getLabelByName(String labelname) {
-        Optional<Label> optionalLabel = labelRepository.findByLabelname(labelname);
-        if (optionalLabel.isPresent()) {
-            return optionalLabel.get();
-        } else {
-            return null;
-        }
-    }
+    public ResponseEntity<ApiResponse<Label>> getLabelByName(String labelname);
 
-    public void deleteById(Long id) {
-        labelRepository.deleteById(id);
-    }
+    public ResponseEntity<String> deleteById(Long id);
 
-    public Label updateLabel(Long labelId, Label updateLabel) {
-        Optional<Label> labelOptional = labelRepository.findById(labelId);
-        if (labelOptional.isPresent()) {
-            Label existingLabel = labelOptional.get();
-            existingLabel.setLabelname(updateLabel.getLabelname());
-            return labelRepository.save(existingLabel);
-        } else {
-            throw new EntityNotFoundException("Label not found with ID: " + labelId);
-        }
-    }
+    public ResponseEntity<ApiResponse<Label>> updateLabel(Long labelId, Label updateLabel);
 }

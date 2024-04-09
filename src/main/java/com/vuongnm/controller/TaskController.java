@@ -29,68 +29,43 @@ public class TaskController {
     //Method get all task
     @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<Task>>> getAll() {
-        return ApiResponse.buildResponse(taskService.getAll(), "success", true, HttpStatus.OK);
+        return taskService.getAll();
     }
 
     //Method create a new task
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Task>> createUser(@RequestBody Task task) {
-        return ApiResponse.buildResponse(taskService.createTask(task), "success", true, HttpStatus.OK);
+        return taskService.createTask(task);
     }
 
     //Method get information of task by id
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Task>> getTaskById(@PathVariable Long id) {
-        Task task = taskService.getTaskById(id);
-        if (task != null) {
-            return ApiResponse.buildResponse(task, "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+        return taskService.getTaskById(id);
     }
 
     //Method get information of task by status(true/false)
     @GetMapping("/status/{completed}")
     public ResponseEntity<ApiResponse<List<Task>>> getTaskByCompleted(@PathVariable Boolean completed) {
-        List<Task> list = taskService.getTaskByCompleted(completed);
-        if (list != null) {
-            return ApiResponse.buildResponse(list, "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+        return taskService.getTaskByCompleted(completed);
     }
 
     //Method get list task by username of user
-    @GetMapping("/getByUsername/{username}")
-    public ResponseEntity<ApiResponse<List<Task>>> getTaskByUsername(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
-        List<Task> taskList = taskService.getTaskByUser(user);
-        if (taskList != null) {
-            return ApiResponse.buildResponse(taskList, "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/getByUsername/{userName}")
+    public ResponseEntity<ApiResponse<List<Task>>> getTaskByUsername(@PathVariable String userName) {
+        User user = userService.getUserByUsername(userName).getBody().getData();
+        return taskService.getTaskByUser(user);
     }
 
     //Method delete task by id
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Long id) {
-        if (taskService.getTaskById(id) != null) {
-            taskService.deleteById(id);
-            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
+        return taskService.deleteById(id);
     }
 
     //Method update information of task by id
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Task>> updateUser(@PathVariable Long id, @RequestBody Task task) {
-        Task taskExist = taskService.getTaskById(id);
-        if (taskExist != null) {
-            return ApiResponse.buildResponse(taskService.updateTask(id, task), "success", true, HttpStatus.OK);
-        } else {
-            return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
-        }
+        return taskService.getTaskById(id);
     }
 }
