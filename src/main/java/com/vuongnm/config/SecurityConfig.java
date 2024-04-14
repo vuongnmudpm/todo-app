@@ -1,51 +1,63 @@
 package com.vuongnm.config;
 
+
+import com.vuongnm.model.User;
+import com.vuongnm.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
-
+import java.util.NoSuchElementException;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
-    /*Ma hoa mat khau*/
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    UserService userService;
+    @Autowired
+    UserDetailsService userDetailsService;
+
     @Bean
     public BCryptPasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /*Quan ly du lieu nguoi su dung*/
-    @Bean
-    UserDetailsService userDetailsService() {
-        UserDetails user1 = User.withUsername("user")
-                .password(getPasswordEncoder().encode("123")).roles("USER")
-                .build();
-        UserDetails user2 = User.withUsername("admin")
-                .password(getPasswordEncoder().encode("1234")).roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(List.of(user1, user2));
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+        auth.inMemoryAuthentication()
+                .withUser("user1").password(pe.encode("123")).roles("GUEST")
+                .and()
+                .withUser("user2").password(pe.encode("123")).roles("USER", "GUEST")
+                .and()
+                .withUser("user3").password(pe.encode("123")).roles("USER", "GUEST", "ADMIN");
+
+        auth.userDetailsService(username -> {
+            try {
+                User user = userService.getUserByUsername(username).getBody().getData();
+                    String password = pe.encode(user.getPassword());
+                    return org.springframework.security.core.userdetails.User.withUsername(username).password(password).roles("GUEST").build();
+            } catch (NoSuchElementException nsee) {
+                throw new UsernameNotFoundException(username + "not found");
+            }
+        });
     }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/security/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(httpBasic -> httpBasic.realmName("My Realm"));
-        return http.build();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable().cors().disable();
+        http.authorizeRequests()
+                .antMatchers("/security/**").hasRole("USER")
+                .anyRequest().permitAll();
+
+        http.exceptionHandling().accessDeniedPage("/auth/denied");
+        http.httpBasic();
     }
 }

@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskLabelId implements Serializable {
-    private Long taskid;
-    private Long labelid;
+public class TaskLabelId  {
+    private Long taskId;
+    private Long labelId;
 }

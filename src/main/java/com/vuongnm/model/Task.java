@@ -1,10 +1,10 @@
 package com.vuongnm.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.sql.Date;
 
 @Data
@@ -14,13 +14,13 @@ import java.sql.Date;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long taskid;
+    private long taskId;
     private String title;
     private String description;
-    private Date duedate;
+    private Date dueDate;
     private Boolean completed;
 
     @ManyToOne
-    @JoinColumn(name = "userid")
+    @JoinColumn(name = "userId")
     private User user;
 }

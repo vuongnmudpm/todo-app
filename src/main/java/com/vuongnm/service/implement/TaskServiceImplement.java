@@ -5,12 +5,13 @@ import com.vuongnm.model.User;
 import com.vuongnm.payload.ApiResponse;
 import com.vuongnm.repository.TaskRepository;
 import com.vuongnm.service.TaskService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -77,12 +78,31 @@ public class TaskServiceImplement implements TaskService {
             Task existingTask = optionalTask.get();
             existingTask.setTitle(updatedTask.getTitle());
             existingTask.setDescription(updatedTask.getDescription());
-            existingTask.setDuedate(updatedTask.getDuedate());
+            existingTask.setDueDate(updatedTask.getDueDate());
             existingTask.setCompleted(updatedTask.getCompleted());
             existingTask.setUser(updatedTask.getUser());
             return ApiResponse.buildResponse(taskRepository.save(existingTask), "success", true, HttpStatus.OK);
         } else {
             return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse<List<Task>>> getTodosDueToday() {
+        List<Task> taskList = taskRepository.findAll();
+        List<Task> tasksOutDate = new ArrayList<>();
+        for (int i = 0; i < taskList.size(); i++) {
+            if (!taskList.get(i).getCompleted()) {
+                LocalDate deadline = taskList.get(i).getDueDate().toLocalDate();
+                if (LocalDate.now().isAfter(deadline)) {
+                    tasksOutDate.add(taskList.get(i));
+                }
+            }
+        }
+        if (tasksOutDate != null) {
+            return ApiResponse.buildResponse(tasksOutDate, "Overdue task list", false, HttpStatus.NOT_FOUND);
+        } else {
+            return ApiResponse.buildResponse(null, "No work is overdue", false, HttpStatus.NOT_FOUND);
         }
     }
 }

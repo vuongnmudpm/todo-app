@@ -4,7 +4,6 @@ import com.vuongnm.model.User;
 import com.vuongnm.payload.ApiResponse;
 import com.vuongnm.repository.UserRepository;
 import com.vuongnm.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public ResponseEntity<ApiResponse<User>> getUserByUsername(String username) {
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUserName(username);
         if (optionalUser.isPresent()) {
             return ApiResponse.buildResponse(optionalUser.get(), "success", true, HttpStatus.OK);
         } else {
@@ -63,7 +62,7 @@ public class UserServiceImplement implements UserService {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User existingUser = userOptional.get();
-            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setUserName(updatedUser.getUserName());
             existingUser.setPassword(updatedUser.getPassword());
             return ApiResponse.buildResponse(userRepository.save(existingUser), "success", true, HttpStatus.OK);
         } else {

@@ -1,7 +1,6 @@
 package com.vuongnm.repository;
 
 import com.vuongnm.model.Label;
-import com.vuongnm.model.Task;
 import com.vuongnm.model.TaskLabel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;

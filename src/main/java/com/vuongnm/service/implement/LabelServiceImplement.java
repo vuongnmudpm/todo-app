@@ -4,7 +4,6 @@ import com.vuongnm.model.Label;
 import com.vuongnm.payload.ApiResponse;
 import com.vuongnm.repository.LabelRepository;
 import com.vuongnm.service.LabelService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class LabelServiceImplement implements LabelService {
 
     @Override
     public ResponseEntity<ApiResponse<Label>> getLabelByName(String labelname) {
-        Optional<Label> optionalLabel = labelRepository.findByLabelname(labelname);
+        Optional<Label> optionalLabel = labelRepository.findByLabelName(labelname);
         if (optionalLabel.isPresent()) {
             return ApiResponse.buildResponse(optionalLabel.get(), "success", true, HttpStatus.OK);
         } else {
@@ -63,7 +62,7 @@ public class LabelServiceImplement implements LabelService {
         Optional<Label> labelOptional = labelRepository.findById(labelId);
         if (labelOptional.isPresent()) {
             Label existingLabel = labelOptional.get();
-            existingLabel.setLabelname(updateLabel.getLabelname());
+            existingLabel.setLabelName(updateLabel.getLabelName());
             return ApiResponse.buildResponse(labelRepository.save(existingLabel), "success", true, HttpStatus.OK);
         } else {
             return ApiResponse.buildResponse(null, "fail", false, HttpStatus.NOT_FOUND);

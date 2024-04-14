@@ -15,7 +15,7 @@ public interface UserService {
 
     public ResponseEntity<ApiResponse<User>> getUserById(Long id);
 
-    public ResponseEntity<ApiResponse<User>> getUserByUsername(String username);
+    public ResponseEntity<ApiResponse<User>> getUserByUsername(String userName);
 
     public ResponseEntity<String> deleteById(Long id);
 

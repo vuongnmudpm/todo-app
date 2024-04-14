@@ -3,15 +3,9 @@ package com.vuongnm.service;
 import com.vuongnm.model.Task;
 import com.vuongnm.model.User;
 import com.vuongnm.payload.ApiResponse;
-import com.vuongnm.repository.TaskRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public interface TaskService {
 
@@ -27,5 +21,7 @@ public interface TaskService {
 
     public ResponseEntity<String> deleteById(Long id);
 
-    public ResponseEntity<ApiResponse<Task>>  updateTask(Long taskId, Task updatedTask);
+    public ResponseEntity<ApiResponse<Task>> updateTask(Long taskId, Task updatedTask);
+
+    public ResponseEntity<ApiResponse<List<Task>>> getTodosDueToday();
 }
