@@ -17,7 +17,7 @@ public interface TaskService {
 
     public ResponseEntity<ApiResponse<List<Task>>> getTaskByUser(User user);
 
-    public ResponseEntity<ApiResponse<List<Task>>> getTaskByCompleted(Boolean completed);
+    public ResponseEntity<ApiResponse<List<Task>>> getTaskByStatus(String status);
 
     public ResponseEntity<String> deleteById(Long id);
 

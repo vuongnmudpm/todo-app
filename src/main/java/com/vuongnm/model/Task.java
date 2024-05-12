@@ -18,7 +18,9 @@ public class Task {
     private String title;
     private String description;
     private Date dueDate;
-    private Boolean completed;
+    private String status;
+    private Date createdDate;
+    private String label;
 
     @ManyToOne
     @JoinColumn(name = "userId")

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
 
-    public ResponseEntity<ApiResponse<List<User>>> getAll();
+    public ApiResponse<List<User>> getAll();
 
     public ResponseEntity<ApiResponse<User>> createUser(User user);
 

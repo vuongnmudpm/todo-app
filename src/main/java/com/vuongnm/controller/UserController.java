@@ -5,6 +5,7 @@ import com.vuongnm.payload.ApiResponse;
 import com.vuongnm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class UserController {
     UserService userService;
 
     //Method get all user
-    @GetMapping("/get-all")
-    public ResponseEntity<ApiResponse<List<User>>> getAll() {
+    @RequestMapping("/get-all")
+    public ApiResponse<List<User>> getAll() {
         return userService.getAll();
     }
 

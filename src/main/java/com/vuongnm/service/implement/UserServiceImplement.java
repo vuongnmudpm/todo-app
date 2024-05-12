@@ -18,8 +18,8 @@ public class UserServiceImplement implements UserService {
     UserRepository userRepository;
 
     @Override
-    public ResponseEntity<ApiResponse<List<User>>> getAll() {
-        return ApiResponse.buildResponse(userRepository.findAll(), "success", true, HttpStatus.OK);
+    public ApiResponse<List<User>> getAll() {
+        return new ApiResponse(userRepository.findAll(), "success", true);
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity(name = "tasklabels")
 @IdClass(TaskLabel.class)
-public class TaskLabel implements Serializable {
+public class TaskLabel implements Serializable{
     @Id
     @ManyToOne
     @JoinColumn(name = "taskId")

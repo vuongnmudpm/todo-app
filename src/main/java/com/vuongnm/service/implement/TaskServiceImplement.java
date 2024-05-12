@@ -52,8 +52,8 @@ public class TaskServiceImplement implements TaskService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse<List<Task>>> getTaskByCompleted(Boolean completed) {
-        Optional<List<Task>> optionalTaskList = taskRepository.getByCompleted(completed);
+    public ResponseEntity<ApiResponse<List<Task>>> getTaskByStatus(String status) {
+        Optional<List<Task>> optionalTaskList = taskRepository.getByStatus(status);
         if (optionalTaskList.isPresent()) {
             return ApiResponse.buildResponse(optionalTaskList.get(), "success", true, HttpStatus.OK);
         } else {
@@ -79,7 +79,7 @@ public class TaskServiceImplement implements TaskService {
             existingTask.setTitle(updatedTask.getTitle());
             existingTask.setDescription(updatedTask.getDescription());
             existingTask.setDueDate(updatedTask.getDueDate());
-            existingTask.setCompleted(updatedTask.getCompleted());
+            existingTask.setStatus(updatedTask.getStatus());
             existingTask.setUser(updatedTask.getUser());
             return ApiResponse.buildResponse(taskRepository.save(existingTask), "success", true, HttpStatus.OK);
         } else {
@@ -92,7 +92,7 @@ public class TaskServiceImplement implements TaskService {
         List<Task> taskList = taskRepository.findAll();
         List<Task> tasksOutDate = new ArrayList<>();
         for (int i = 0; i < taskList.size(); i++) {
-            if (!taskList.get(i).getCompleted()) {
+            if (!taskList.get(i).getStatus().equals("Completed")) {
                 LocalDate deadline = taskList.get(i).getDueDate().toLocalDate();
                 if (LocalDate.now().isAfter(deadline)) {
                     tasksOutDate.add(taskList.get(i));

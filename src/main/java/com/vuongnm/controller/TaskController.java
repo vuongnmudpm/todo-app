@@ -4,6 +4,7 @@ import com.vuongnm.model.Label;
 import com.vuongnm.model.Task;
 import com.vuongnm.model.User;
 import com.vuongnm.payload.ApiResponse;
+import com.vuongnm.service.ClassificationService;
 import com.vuongnm.service.LabelService;
 import com.vuongnm.service.TaskService;
 import com.vuongnm.service.UserService;
@@ -25,6 +26,8 @@ public class TaskController {
     TaskService taskService;
     @Autowired
     UserService userService;
+    @Autowired
+    ClassificationService classificationService;
 
     //Method get all task
     @GetMapping("/get-all")
@@ -32,9 +35,20 @@ public class TaskController {
         return taskService.getAll();
     }
 
+    @GetMapping("/label-AI")
+    public String getLabelAI() {
+        long id = 1;
+        Task task = taskService.getTaskById(id).getBody().getData();
+        String label = classificationService.classifyTask("shopping food");
+        return "AI";
+    }
+
     //Method create a new task
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Task>> createUser(@RequestBody Task task) {
+        String label = classificationService.classifyTask(task.getDescription());
+        task.setLabel(label);
+        System.out.println(task.getUser());
         return taskService.createTask(task);
     }
 
@@ -46,8 +60,8 @@ public class TaskController {
 
     //Method get information of task by status(true/false)
     @GetMapping("/status/{completed}")
-    public ResponseEntity<ApiResponse<List<Task>>> getTaskByCompleted(@PathVariable Boolean completed) {
-        return taskService.getTaskByCompleted(completed);
+    public ResponseEntity<ApiResponse<List<Task>>> getTaskByCompleted(@PathVariable String status) {
+        return taskService.getTaskByStatus(status);
     }
 
     //Method get list task by username of user

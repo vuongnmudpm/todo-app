@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
@@ -19,4 +20,9 @@ public class User {
     private String email;
     private String password;
     private String avatar;
+    private String phone;
+    private String firstName;
+    private String lastName;
+    private String birthDay;
+    private Date createdDate;
 }
